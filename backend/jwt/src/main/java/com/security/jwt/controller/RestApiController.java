@@ -4,13 +4,12 @@ import com.security.jwt.config.auth.PrincipalDetails;
 import com.security.jwt.domain.User;
 import com.security.jwt.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class RestApiController {
@@ -34,10 +33,11 @@ public class RestApiController {
     }
 
     @GetMapping("/api/v1/user")
-    public String user(Authentication authentication){
+    public ResponseEntity<User> user(Authentication authentication){
         PrincipalDetails principle= (PrincipalDetails) authentication.getPrincipal();
-        System.out.println("authentication ::"+principle.getUser());
-        return "<h1>user</h1>";
+        System.out.println("RestApiController -> session에 저장된 유저 정보 ::"+principle.getUser().getNickname());
+        ResponseEntity<User> entity=new ResponseEntity<>(principle.getUser(),HttpStatus.OK);
+        return entity;
     }
     @GetMapping("/api/v1/owner")
     public String owner(Authentication authentication){
